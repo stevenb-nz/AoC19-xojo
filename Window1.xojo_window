@@ -392,67 +392,112 @@ End
 
 	#tag Method, Flags = &h0
 		Function day04a(input As String) As String
-		  dim temp(-1) as string
-		  dim wire1(-1) as string
-		  dim i,j,p,x,y,minmd as integer
-		  dim d As string
-		  dim points as new Dictionary
+		  dim temp() as string
+		  dim lower, upper as integer
+		  dim a,b,c,d,e,f, i as integer
+		  dim check as Boolean
+		  dim canda,candb,candc,candd,cande,candf as string
+		  dim candv,total as integer
 		  
-		  temp = input.Split(chr(13))
-		  wire1 = temp(0).Split(",")
-		  x=0
-		  y=0
-		  for i = 0 to UBound(wire1)
-		    d = left(wire1(i),1)
-		    p = val(right(wire1(i),len(wire1(i))-1))
-		    for j = 1 to p
-		      select case d
-		      case "D"
-		        y = y -1
-		      case "L"
-		        x = x - 1
-		      case "R"
-		        x = x + 1
-		      case "U"
-		        y = y + 1
-		      else
-		        MsgBox "error"
-		      end select
-		      points.Value(str(x)+","+str(y)) = "w1"
-		    next
-		  next
-		  wire1 = temp(1).Split(",")
-		  x=0
-		  y=0
-		  for i = 0 to UBound(wire1)
-		    d = left(wire1(i),1)
-		    p = val(right(wire1(i),len(wire1(i))-1))
-		    for j = 1 to p
-		      select case d
-		      case "D"
-		        y = y -1
-		      case "L"
-		        x = x - 1
-		      case "R"
-		        x = x + 1
-		      case "U"
-		        y = y + 1
-		      else
-		        MsgBox "error"
-		      end select
-		      if points.HasKey(str(x)+","+str(y)) then
-		        if minmd = 0 then
-		          minmd = abs(0-x)+abs(0-y)
-		        end
-		        if minmd > abs(0-x)+abs(0-y) then
-		          minmd = abs(0-x)+abs(0-y)
-		        end
-		      end
+		  temp = split(input,"-")
+		  lower = val(temp(0))
+		  upper = val(temp(1))
+		  
+		  for a = val(left(str(lower),1)) to val(left(str(upper),1))
+		    canda = str(a)
+		    for b = a to 9
+		      candb = canda + str(b)
+		      for c = b to 9
+		        candc = candb + str(c)
+		        for d = c to 9
+		          candd = candc + str(d)
+		          for e = d to 9
+		            cande = candd + str(e)
+		            for f = e to 9
+		              candf = cande + str(f)
+		              candv = val(candf)
+		              if candv >= lower and candv <= upper then
+		                check = false
+		                for i = 1 to 5
+		                  if mid(candf,i,1) = mid(candf,i+1,1) then
+		                    check = true
+		                  end
+		                next
+		                if check then
+		                  total = total + 1
+		                end
+		              end
+		            next
+		          next
+		        next
+		      Next
 		    next
 		  next
 		  
-		  return str(minmd)
+		  return str(total)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function day04b(input As String) As String
+		  dim temp() as string
+		  dim digits(9) as integer
+		  dim lower, upper as integer
+		  dim a,b,c,d,e,f, i as integer
+		  dim check as Boolean
+		  dim canda,candb,candc,candd,cande,candf as string
+		  dim candv,total as integer
 		  
+		  temp = split(input,"-")
+		  lower = val(temp(0))
+		  upper = val(temp(1))
+		  
+		  for a = val(left(str(lower),1)) to val(left(str(upper),1))
+		    canda = str(a)
+		    for b = a to 9
+		      candb = canda + str(b)
+		      for c = b to 9
+		        candc = candb + str(c)
+		        for d = c to 9
+		          candd = candc + str(d)
+		          for e = d to 9
+		            cande = candd + str(e)
+		            for f = e to 9
+		              candf = cande + str(f)
+		              candv = val(candf)
+		              if candv >= lower and candv <= upper then
+		                check = false
+		                for i = 1 to 5
+		                  if mid(candf,i,1) = mid(candf,i+1,1) then
+		                    check = true
+		                  end
+		                next
+		                if check then
+		                  check = false
+		                  for i = 0 to 9
+		                    digits(i) = 0
+		                  next
+		                  for i = 1 to 6
+		                    digits(val(mid(candf,i,1))) = digits(val(mid(candf,i,1))) + 1
+		                  next
+		                  for i = 0 to 9
+		                    if digits(i) = 2 then
+		                      check = true
+		                    end
+		                  next
+		                  if check then
+		                    total = total + 1
+		                  end
+		                end
+		              end
+		            next
+		          next
+		        next
+		      Next
+		    next
+		  next
+		  
+		  return str(total)
 		End Function
 	#tag EndMethod
 
@@ -478,7 +523,7 @@ End
 		  case "04a"
 		    outputArea.Text = day04a(inputArea.text)
 		  case "04b"
-		    'outputArea.Text = day04b(inputArea.text)
+		    outputArea.Text = day04b(inputArea.text)
 		  case "05a"
 		    'outputArea.Text = day05a(inputArea.text)
 		  case "05b"
