@@ -572,7 +572,7 @@ End
 		  opcode_step.Append 3
 		  opcode_step.Append 3
 		  
-		  inputs.Append(1)
+		  inputs.Append(5)
 		  temp = input.Split(",")
 		  for i = 0 to UBound(temp)
 		    prog.Append val(temp(i))
@@ -602,13 +602,31 @@ End
 		      outputs.Append prog(prog(p+1))
 		      p = p + opcode_step(3) + 1
 		    case 5
-		      'Opcode 5 is jump-if-true: if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+		      if param(0) = 0 then
+		        p = p + opcode_step(4) + 1
+		      else
+		        p = param(1)
+		      end
 		    case 6
-		      'Opcode 6 is jump-if-false: if the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+		      if param(0) = 0 then
+		        p = param(1)
+		      else
+		        p = p + opcode_step(5) + 1
+		      end
 		    case 7
-		      'Opcode 7 is less than: if the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+		      if param(0) < param(1) then
+		        prog(prog(p+3)) = 1
+		      else
+		        prog(prog(p+3)) = 0
+		      end
+		      p = p + opcode_step(6) + 1
 		    case 8
-		      'Opcode 8 is equals: if the first parameter is equal to the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+		      if param(0) = param(1) then
+		        prog(prog(p+3)) = 1
+		      else
+		        prog(prog(p+3)) = 0
+		      end
+		      p = p + opcode_step(7) + 1
 		    end select
 		    opcode = prog(p) mod 100
 		  wend
