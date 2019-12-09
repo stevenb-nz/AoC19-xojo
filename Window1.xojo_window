@@ -552,6 +552,72 @@ End
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function day05b(input As String) As String
+		  dim temp(-1) as string
+		  dim prog(-1) as Integer
+		  dim opcode_step(-1) as integer
+		  dim inputs(-1) as integer
+		  dim outputs(-1) as integer
+		  dim param(2) as integer
+		  dim mode(2) As Integer
+		  dim i,p,opcode as integer
+		  
+		  opcode_step.Append 3
+		  opcode_step.Append 3
+		  opcode_step.Append 1
+		  opcode_step.Append 1
+		  opcode_step.Append 2
+		  opcode_step.Append 2
+		  opcode_step.Append 3
+		  opcode_step.Append 3
+		  
+		  inputs.Append(1)
+		  temp = input.Split(",")
+		  for i = 0 to UBound(temp)
+		    prog.Append val(temp(i))
+		  next
+		  p = 0
+		  opcode = prog(p) mod 100
+		  while opcode <> 99
+		    for i = 1 to opcode_step(opcode-1)
+		      mode(i-1) = (prog(p) \ Pow(10,i+1)) mod 10
+		      if mode(i-1) = 0 then
+		        param(i-1) = prog(prog(p+i))
+		      else
+		        param(i-1) = prog(p+i)
+		      end
+		    next
+		    select case opcode
+		    case 1
+		      prog(prog(p+3)) = param(0) + param(1)
+		      p = p + opcode_step(0) + 1
+		    case 2
+		      prog(prog(p+3)) = param(0) * param(1)
+		      p = p + opcode_step(1) + 1
+		    case 3
+		      prog(prog(p+1)) = inputs.pop
+		      p = p + opcode_step(2) + 1
+		    case 4
+		      outputs.Append prog(prog(p+1))
+		      p = p + opcode_step(3) + 1
+		    case 5
+		      'Opcode 5 is jump-if-true: if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+		    case 6
+		      'Opcode 6 is jump-if-false: if the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+		    case 7
+		      'Opcode 7 is less than: if the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+		    case 8
+		      'Opcode 8 is equals: if the first parameter is equal to the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+		    end select
+		    opcode = prog(p) mod 100
+		  wend
+		  
+		  return str(outputs(UBound(outputs)))
+		  
+		End Function
+	#tag EndMethod
+
 
 #tag EndWindowCode
 
@@ -578,7 +644,7 @@ End
 		  case "05a"
 		    outputArea.Text = day05a(inputArea.text)
 		  case "05b"
-		    'outputArea.Text = day05b(inputArea.text)
+		    outputArea.Text = day05b(inputArea.text)
 		  case "06a"
 		    'outputArea.Text = day06a(inputArea.text)
 		  case "06b"
