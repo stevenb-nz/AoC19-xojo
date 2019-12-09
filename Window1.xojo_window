@@ -505,25 +505,49 @@ End
 		Function day05a(input As String) As String
 		  dim temp(-1) as string
 		  dim prog(-1) as Integer
-		  dim i,p as integer
+		  dim opcode_step(-1) as integer
+		  dim inputs(-1) as integer
+		  dim outputs(-1) as integer
+		  dim param(2) as integer
+		  dim mode(2) As Integer
+		  dim i,p,opcode as integer
 		  
+		  opcode_step.Append 3
+		  opcode_step.Append 3
+		  opcode_step.Append 1
+		  opcode_step.Append 1
+		  
+		  inputs.Append(1)
 		  temp = input.Split(",")
 		  for i = 0 to UBound(temp)
 		    prog.Append val(temp(i))
 		  next
 		  p = 0
-		  while prog(p) <> 99
-		    select case prog(p)
+		  opcode = prog(p) mod 100
+		  while opcode <> 99
+		    for i = 1 to opcode_step(opcode-1)
+		      mode(i-1) = (prog(p) \ Pow(10,i+1)) mod 10
+		      if mode(i-1) = 0 then
+		        param(i-1) = prog(prog(p+i))
+		      else
+		        param(i-1) = prog(p+i)
+		      end
+		    next
+		    select case opcode
 		    case 1
-		      prog(prog(p+3)) = prog(prog(p+1)) + prog(prog(p+2))
-		      p = p + 4
+		      prog(prog(p+3)) = param(0) + param(1)
 		    case 2
-		      prog(prog(p+3)) = prog(prog(p+1)) * prog(prog(p+2))
-		      p = p + 4
+		      prog(prog(p+3)) = param(0) * param(1)
+		    case 3
+		      prog(prog(p+1)) = inputs.pop
+		    case 4
+		      outputs.Append prog(prog(p+1))
 		    end select
+		    p = p + opcode_step(opcode-1) + 1
+		    opcode = prog(p) mod 100
 		  wend
 		  
-		  return str(prog(0))
+		  return str(outputs(UBound(outputs)))
 		  
 		End Function
 	#tag EndMethod
